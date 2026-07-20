@@ -1,21 +1,30 @@
-# VH Lighting Sales
+# VH Lighting Sales — Final
 
-## Cập nhật cơ sở dữ liệu bắt buộc
+Bản tích hợp cuối gồm Giai đoạn 1 + Giai đoạn 2 + hóa đơn A4 nâng cấp.
 
-Để cho phép nhiều sản phẩm dùng chung một mã, mở Supabase → SQL Editor → New query, rồi chạy toàn bộ nội dung file:
+## Tính năng
+- Đăng nhập Supabase Auth
+- Dashboard phong cách phần mềm bán hàng hiện đại
+- Khách hàng, sản phẩm, kho, đơn hàng
+- Cho phép nhiều sản phẩm dùng chung mã SKU
+- Tìm sản phẩm theo mã hoặc tên khi tạo đơn
+- In phiếu bán hàng A4 kẻ ô, số tiền bằng chữ, thông tin ngân hàng/STK
+- Trang Cài đặt hóa đơn để nhập thông tin doanh nghiệp, ngân hàng, STK, logo, bảo hành
+- Responsive desktop/tablet/mobile
 
-`supabase/migration_allow_duplicate_sku.sql`
+## Triển khai
+1. Tạo project Supabase.
+2. Chạy `supabase/schema.sql` trong SQL Editor cho project mới.
+3. Với database cũ, chạy thêm:
+   - `supabase/migration_allow_duplicate_sku.sql`
+   - `supabase/migration_company_invoice_settings.sql`
+4. Tạo user tại Supabase Authentication.
+5. Upload toàn bộ nội dung thư mục này lên root repository GitHub.
+6. Import repository vào Vercel.
+7. Thêm biến môi trường:
+   - `NEXT_PUBLIC_SUPABASE_URL`
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+8. Deploy.
 
-Sau đó cập nhật mã nguồn lên GitHub. Vercel sẽ tự triển khai lại.
-
-## Biến môi trường Vercel
-
-- `NEXT_PUBLIC_SUPABASE_URL`: chỉ dạng `https://xxxxx.supabase.co`, không thêm `/rest/v1`.
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`: publishable/anon key.
-
-## Chức năng mới
-
-- Cho phép nhiều sản phẩm dùng chung mã SKU.
-- Nhập mã hoặc tên sản phẩm trong trang tạo đơn để hiện danh sách sản phẩm phù hợp.
-- Giao diện tìm kiếm và thao tác mượt hơn.
-- Phiếu bán hàng A4 có kẻ ô đầy đủ.
+## Kiểm tra build
+Bản này đã chạy thành công `next build` với Next.js 15.5.20 và TypeScript.
