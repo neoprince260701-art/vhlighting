@@ -1,17 +1,21 @@
-# VH Lighting Sales — bản hoàn chỉnh triển khai Vercel
+# VH Lighting Sales
 
-## Chức năng
-Đăng nhập Supabase, dashboard, khách hàng, sản phẩm, tạo đơn, danh sách đơn, chi tiết và in A4.
+## Cập nhật cơ sở dữ liệu bắt buộc
 
-## Không cần chạy local
-1. Tạo Supabase project.
-2. Mở SQL Editor, dán toàn bộ `supabase/schema.sql`, bấm Run.
-3. Authentication > Users > Add user, tạo tài khoản nhân viên.
-4. Tạo GitHub repository riêng tư và upload **toàn bộ nội dung trong thư mục này** (không upload file zip).
-5. Vercel > Add New > Project > Import repository.
-6. Thêm Environment Variables:
-   - `NEXT_PUBLIC_SUPABASE_URL`
-   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-7. Deploy.
+Để cho phép nhiều sản phẩm dùng chung một mã, mở Supabase → SQL Editor → New query, rồi chạy toàn bộ nội dung file:
 
-Trang chính của Next.js là `app/page.tsx`, không cần `index.html`.
+`supabase/migration_allow_duplicate_sku.sql`
+
+Sau đó cập nhật mã nguồn lên GitHub. Vercel sẽ tự triển khai lại.
+
+## Biến môi trường Vercel
+
+- `NEXT_PUBLIC_SUPABASE_URL`: chỉ dạng `https://xxxxx.supabase.co`, không thêm `/rest/v1`.
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`: publishable/anon key.
+
+## Chức năng mới
+
+- Cho phép nhiều sản phẩm dùng chung mã SKU.
+- Nhập mã hoặc tên sản phẩm trong trang tạo đơn để hiện danh sách sản phẩm phù hợp.
+- Giao diện tìm kiếm và thao tác mượt hơn.
+- Phiếu bán hàng A4 có kẻ ô đầy đủ.
