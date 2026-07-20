@@ -9,7 +9,7 @@ import type { CompanySettings } from "@/lib/types";
 const defaults: CompanySettings = {
   id: 1, company_name: "VH LIGHTING", tagline: "Chuyên cung cấp thiết bị chiếu sáng",
   address: "", hotline: "0877 933 362", website: "vulighting.com",
-  email: "vat.vuhoanglighting@gmail.com", tax_code: "", bank_name: "",
+  email: "vat.vuhoanglighting@gmail.com", tax_code: "", bank_name: "", bank_id: "",
   bank_account: "", bank_holder: "", bank_branch: "", logo_url: "",
   warranty_note: "Sản phẩm được bảo hành theo chính sách của nhà sản xuất. Vui lòng giữ phiếu bán hàng để được hỗ trợ.",
   invoice_footer: "Cảm ơn Quý khách đã tin tưởng và lựa chọn VH Lighting."
@@ -41,6 +41,7 @@ export default function Page(){
     </div></div>
     <div className="settings-section"><h3>Tài khoản nhận thanh toán</h3><div className="form-grid">
       <label>Ngân hàng<input value={form.bank_name||""} onChange={e=>set("bank_name",e.target.value)} placeholder="VD: Vietcombank"/></label>
+      <label>Mã ngân hàng VietQR<input value={form.bank_id||""} onChange={e=>set("bank_id",e.target.value.trim())} placeholder="VD: VCB hoặc 970436"/><small>Dùng mã viết tắt hoặc BIN để tạo QR chuyển khoản.</small></label>
       <label>Số tài khoản<input value={form.bank_account||""} onChange={e=>set("bank_account",e.target.value)} placeholder="Nhập STK công ty"/></label>
       <label>Chủ tài khoản<input value={form.bank_holder||""} onChange={e=>set("bank_holder",e.target.value)} placeholder="Tên công ty/chủ tài khoản"/></label>
       <label>Chi nhánh<input value={form.bank_branch||""} onChange={e=>set("bank_branch",e.target.value)}/></label>

@@ -14,6 +14,7 @@ export default function Page() {
   const [customerId, setCustomerId] = useState("");
   const [items, setItems] = useState<OrderItem[]>([]);
   const [discount, setDiscount] = useState(0);
+  const [shippingFee, setShippingFee] = useState(0);
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
   const [productQuery, setProductQuery] = useState("");
@@ -47,14 +48,14 @@ export default function Page() {
   }
 
   const subtotal = useMemo(() => items.reduce((sum, x) => sum + x.line_total, 0), [items]);
-  const total = Math.max(0, subtotal - discount);
+  const total = Math.max(0, subtotal - discount + shippingFee);
 
   async function save() {
     if (!items.length) return alert("Hãy thêm ít nhất một sản phẩm");
     const customer = customers.find(x => x.id === customerId);
     setBusy(true);
     const orderNo = "VH-" + new Date().toISOString().slice(0, 10).replaceAll("-", "") + "-" + Math.floor(1000 + Math.random() * 9000);
-    const { data: order, error } = await supabase.from("orders").insert({ order_no: orderNo, customer_id: customer?.id || null, customer_name: customer?.name || "Khách lẻ", customer_phone: customer?.phone || null, customer_address: customer?.address || null, subtotal, discount, total, status: "Mới", note }).select().single();
+    const { data: order, error } = await supabase.from("orders").insert({ order_no: orderNo, customer_id: customer?.id || null, customer_name: customer?.name || "Khách lẻ", customer_phone: customer?.phone || null, customer_address: customer?.address || null, subtotal, discount, shipping_fee: shippingFee, total, status: "Mới", note }).select().single();
     if (error) { alert(error.message); setBusy(false); return; }
     const { error: itemError } = await supabase.from("order_items").insert(items.map(x => ({ ...x, order_id: order.id })));
     if (itemError) alert(itemError.message); else router.push("/orders/" + order.id);
@@ -75,7 +76,11 @@ export default function Page() {
         {!items.length && <tr><td colSpan={8} className="empty-state">Nhập mã sản phẩm phía trên để thêm vào đơn.</td></tr>}
       </tbody></table></div>
 
-      <div className="checkout"><div><label>Ghi chú</label><textarea placeholder="Ghi chú giao hàng, bảo hành hoặc thanh toán…" value={note} onChange={e => setNote(e.target.value)}/></div><div className="totals"><p>Tạm tính <b>{subtotal.toLocaleString("vi-VN")} ₫</b></p><label>Chiết khấu</label><input type="number" min="0" value={discount} onChange={e => setDiscount(Number(e.target.value))}/><h3>Tổng cộng <b>{total.toLocaleString("vi-VN")} ₫</b></h3><button className="primary" onClick={save} disabled={busy}>{busy ? "Đang lưu…" : "Lưu và xem đơn"}</button></div></div>
+      <div className="checkout"><div><label>Ghi chú</label><textarea placeholder="Ghi chú giao hàng, bảo hành hoặc thanh toán…" value={note} onChange={e => setNote(e.target.value)}/></div><div className="totals">
+        <p>Tạm tính <b>{subtotal.toLocaleString("vi-VN")} ₫</b></p>
+        <label>Chiết khấu</label><div className="money-input-wrap"><input type="number" min="0" value={discount} onChange={e => setDiscount(Math.max(0, Number(e.target.value)))}/><span>₫</span></div>
+        <label>Phí vận chuyển</label><div className="money-input-wrap"><input type="number" min="0" value={shippingFee} onChange={e => setShippingFee(Math.max(0, Number(e.target.value)))}/><span>₫</span></div>
+        <h3>Tổng cộng <b>{total.toLocaleString("vi-VN")} ₫</b></h3><button className="primary" onClick={save} disabled={busy}>{busy ? "Đang lưu…" : "Lưu và xem đơn"}</button></div></div>
     </div>
   </AppShell></AuthGuard>;
 }

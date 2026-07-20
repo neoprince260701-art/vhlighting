@@ -28,3 +28,7 @@ Bản tích hợp cuối gồm Giai đoạn 1 + Giai đoạn 2 + hóa đơn A4 n
 
 ## Kiểm tra build
 Bản này đã chạy thành công `next build` với Next.js 15.5.20 và TypeScript.
+
+
+## Cập nhật phí vận chuyển và VietQR
+Nếu database đã tồn tại, chạy thêm file `supabase/migration_shipping_fee_vietqr.sql` trong Supabase SQL Editor. Sau đó vào **Cài đặt hóa đơn** và nhập mã ngân hàng VietQR (ví dụ `VCB` hoặc mã BIN), số tài khoản và chủ tài khoản.

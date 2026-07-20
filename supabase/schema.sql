@@ -1,7 +1,7 @@
 create extension if not exists pgcrypto;
 create table if not exists public.customers(id uuid primary key default gen_random_uuid(),name text not null,phone text,address text,tax_code text,created_at timestamptz not null default now());
 create table if not exists public.products(id uuid primary key default gen_random_uuid(),sku text not null,name text not null,unit text not null default 'Cái',price numeric(14,2) not null default 0,stock integer not null default 0,created_at timestamptz not null default now());
-create table if not exists public.orders(id uuid primary key default gen_random_uuid(),order_no text not null unique,customer_id uuid references public.customers(id) on delete set null,customer_name text not null,customer_phone text,customer_address text,subtotal numeric(14,2) not null default 0,discount numeric(14,2) not null default 0,total numeric(14,2) not null default 0,status text not null default 'Mới',note text,created_at timestamptz not null default now(),created_by uuid default auth.uid());
+create table if not exists public.orders(id uuid primary key default gen_random_uuid(),order_no text not null unique,customer_id uuid references public.customers(id) on delete set null,customer_name text not null,customer_phone text,customer_address text,subtotal numeric(14,2) not null default 0,discount numeric(14,2) not null default 0,shipping_fee numeric(14,2) not null default 0,total numeric(14,2) not null default 0,status text not null default 'Mới',note text,created_at timestamptz not null default now(),created_by uuid default auth.uid());
 create table if not exists public.order_items(id uuid primary key default gen_random_uuid(),order_id uuid not null references public.orders(id) on delete cascade,product_id uuid references public.products(id) on delete set null,sku text not null,product_name text not null,unit text not null,quantity numeric(12,2) not null default 1,unit_price numeric(14,2) not null default 0,line_total numeric(14,2) not null default 0);
 alter table public.customers enable row level security;alter table public.products enable row level security;alter table public.orders enable row level security;alter table public.order_items enable row level security;
 do $$ begin
@@ -18,7 +18,7 @@ create index if not exists idx_products_sku_name on public.products(sku,name);
 create table if not exists public.company_settings(
   id integer primary key default 1 check(id=1),
   company_name text not null default 'VH LIGHTING', tagline text, address text, hotline text,
-  website text, email text, tax_code text, bank_name text, bank_account text,
+  website text, email text, tax_code text, bank_name text, bank_id text, bank_account text,
   bank_holder text, bank_branch text, logo_url text, warranty_note text, invoice_footer text,
   updated_at timestamptz not null default now()
 );

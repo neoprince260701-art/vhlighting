@@ -7,7 +7,7 @@ import { supabase } from "@/lib/supabase";
 import { moneyToVietnameseWords } from "@/lib/money-to-words";
 import type { CompanySettings, Order, OrderItem } from "@/lib/types";
 
-const fallback: CompanySettings={id:1,company_name:"VH LIGHTING",tagline:"Chuyên cung cấp thiết bị chiếu sáng",address:"",hotline:"0877 933 362",website:"vulighting.com",email:"vat.vuhoanglighting@gmail.com",tax_code:"",bank_name:"",bank_account:"",bank_holder:"",bank_branch:"",logo_url:"",warranty_note:"Sản phẩm được bảo hành theo chính sách của nhà sản xuất.",invoice_footer:"Cảm ơn Quý khách đã tin tưởng VH Lighting."};
+const fallback: CompanySettings={id:1,company_name:"VH LIGHTING",tagline:"Chuyên cung cấp thiết bị chiếu sáng",address:"",hotline:"0877 933 362",website:"vulighting.com",email:"vat.vuhoanglighting@gmail.com",tax_code:"",bank_name:"",bank_id:"",bank_account:"",bank_holder:"",bank_branch:"",logo_url:"",warranty_note:"Sản phẩm được bảo hành theo chính sách của nhà sản xuất.",invoice_footer:"Cảm ơn Quý khách đã tin tưởng VH Lighting."};
 const money=(v:number)=>Number(v||0).toLocaleString("vi-VN");
 
 export default function Page() {
@@ -20,7 +20,17 @@ export default function Page() {
     supabase.from("order_items").select("*").eq("order_id", id).order("id"),
     supabase.from("company_settings").select("*").eq("id",1).maybeSingle()
   ]).then(([a,b,c])=>{setOrder(a.data);setItems(b.data||[]);if(c.data)setCompany({...fallback,...c.data});}); }, [id]);
-  const blankRows=useMemo(()=>Array.from({length:Math.max(0,8-items.length)}),[items.length]);
+  const qrUrl=useMemo(()=>{
+    if(!order || !company.bank_id || !company.bank_account) return "";
+    const bank=encodeURIComponent(company.bank_id.trim());
+    const account=encodeURIComponent(company.bank_account.replace(/\s+/g,""));
+    const params=new URLSearchParams({
+      amount:String(Math.max(0,Math.round(Number(order.total||0)))),
+      addInfo:order.order_no.slice(0,25),
+      accountName:(company.bank_holder||"").slice(0,50)
+    });
+    return `https://img.vietqr.io/image/${bank}-${account}-compact2.png?${params.toString()}`;
+  },[company.bank_id,company.bank_account,company.bank_holder,order]);
 
   return <AuthGuard><AppShell title="Chi tiết đơn hàng" action={<button className="primary" onClick={() => window.print()}>In / Lưu PDF A4</button>}>
     {!order ? <div>Đang tải…</div> : <article className="invoice">
@@ -43,14 +53,13 @@ export default function Page() {
 
       <table className="invoice-table"><thead><tr><th>STT</th><th>Mã hàng</th><th>Tên sản phẩm</th><th>ĐVT</th><th>SL</th><th>Đơn giá</th><th>Thành tiền</th></tr></thead><tbody>
         {items.map((x,i)=><tr key={i}><td>{i+1}</td><td>{x.sku}</td><td>{x.product_name}</td><td>{x.unit}</td><td>{x.quantity}</td><td>{money(x.unit_price)}</td><td>{money(x.line_total)}</td></tr>)}
-        {blankRows.map((_,i)=><tr className="invoice-empty-row" key={`blank-${i}`}><td>{items.length+i+1}</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>)}
       </tbody></table>
 
       <section className="invoice-finance">
         <div className="invoice-payment-box"><h3>THÔNG TIN THANH TOÁN</h3>
-          {company.bank_account?<><p><span>Ngân hàng</span><b>{company.bank_name||"—"}</b></p><p><span>Số tài khoản</span><b className="bank-account">{company.bank_account}</b></p><p><span>Chủ tài khoản</span><b>{company.bank_holder||"—"}</b></p>{company.bank_branch&&<p><span>Chi nhánh</span><b>{company.bank_branch}</b></p>}</>:<p className="invoice-muted">Cập nhật số tài khoản tại mục Cài đặt hóa đơn.</p>}
+          {company.bank_account?<div className="invoice-payment-content"><div className="invoice-bank-details"><p><span>Ngân hàng</span><b>{company.bank_name||"—"}</b></p><p><span>Số tài khoản</span><b className="bank-account">{company.bank_account}</b></p><p><span>Chủ tài khoản</span><b>{company.bank_holder||"—"}</b></p>{company.bank_branch&&<p><span>Chi nhánh</span><b>{company.bank_branch}</b></p>}<p><span>Nội dung CK</span><b>{order.order_no}</b></p></div>{qrUrl&&<div className="invoice-qr"><img src={qrUrl} alt="QR chuyển khoản"/><span>Quét QR để chuyển khoản</span></div>}</div>:<p className="invoice-muted">Cập nhật số tài khoản tại mục Cài đặt hóa đơn.</p>}
         </div>
-        <table className="invoice-total-table"><tbody><tr><td>Tạm tính</td><td>{money(order.subtotal)} ₫</td></tr><tr><td>Chiết khấu</td><td>- {money(order.discount)} ₫</td></tr><tr className="grand-total"><td>TỔNG THANH TOÁN</td><td>{money(order.total)} ₫</td></tr></tbody></table>
+        <table className="invoice-total-table"><tbody><tr><td>Tạm tính</td><td>{money(order.subtotal)} ₫</td></tr><tr><td>Chiết khấu</td><td>- {money(order.discount)} ₫</td></tr><tr><td>Phí vận chuyển</td><td>+ {money(order.shipping_fee||0)} ₫</td></tr><tr className="grand-total"><td>TỔNG THANH TOÁN</td><td>{money(order.total)} ₫</td></tr></tbody></table>
       </section>
 
       <div className="invoice-in-words"><b>Bằng chữ:</b> <em>{moneyToVietnameseWords(order.total)}.</em></div>
