@@ -1,33 +1,20 @@
-# VH Lighting ERP Final 1.1
+# VH Lighting Final 1.1
 
-Bản này được nâng cấp trực tiếp từ `VH-Lighting-Final-v3-Compact-Invoice` và chỉ tập trung vào bố cục đơn hàng/hóa đơn, không có chức năng nhập Excel.
+Bản này được nâng cấp trực tiếp từ Final v3 Compact Invoice đang hoạt động ổn định.
 
-## Đã cập nhật
-
-- Danh sách đơn hàng theo bố cục quản trị mới.
-- Mã đơn nội bộ vẫn hiển thị trong danh sách/chi tiết đơn.
-- Hóa đơn A4 không hiển thị mã đơn và không hiển thị mã sản phẩm.
-- Bảng hóa đơn: STT, Tên sản phẩm, Thuộc tính, ĐVT, SL, Đơn giá, Thành tiền.
-- Thuộc tính tùy chọn: Trắng, Vàng, Trung tính.
-- QR VietQR lớn hơn, dễ quét.
-- Giữ chiết khấu, phí vận chuyển, tổng thanh toán.
-- Bỏ phần số tiền bằng chữ.
-- Chỉ còn chữ ký Người lập phiếu và Khách hàng.
-- Người lập phiếu mặc định `Vũ Lighting`, chỉnh được trong Cài đặt.
-- Không thêm/import Excel.
+## Đã thay đổi
+- Thêm thuộc tính sản phẩm tùy chọn: Trắng, Vàng, Trung tính.
+- Hiển thị thuộc tính ở form sản phẩm, màn hình tạo đơn, chi tiết đơn và hóa đơn.
+- Hóa đơn bỏ cột Mã hàng và không hiển thị mã đơn nội bộ.
+- QR VietQR tăng lên khoảng 38 mm để dễ quét.
+- Bỏ phần số tiền bằng chữ và chính sách bảo hành trên hóa đơn.
+- Ghi chú đơn hàng giữ một khung riêng.
+- Chữ ký chỉ còn Người lập phiếu và Khách hàng.
+- Người lập phiếu mặc định là Vũ Lighting và chỉnh được tại Cài đặt.
+- Không có chức năng nhập Excel.
 
 ## SQL cần chạy một lần
+Chạy `supabase/migration_invoice_attribute_final_1_1.sql` trong Supabase SQL Editor.
 
-Mở Supabase > SQL Editor và chạy:
-
-`supabase/migration_invoice_final_1_1.sql`
-
-Migration chỉ thêm các cột `attribute` và `invoice_creator_name`, không xóa dữ liệu cũ.
-
-## Deploy
-
-1. Upload toàn bộ nội dung thư mục này lên root repository GitHub.
-2. Giữ nguyên biến môi trường Vercel:
-   - `NEXT_PUBLIC_SUPABASE_URL`
-   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-3. Vercel tự deploy lại.
+## Triển khai
+Giữ nguyên các biến môi trường Supabase. Upload nội dung project lên root GitHub và để Vercel deploy như bản cũ.
