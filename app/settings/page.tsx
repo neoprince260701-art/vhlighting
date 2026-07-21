@@ -12,8 +12,7 @@ const defaults: CompanySettings = {
   email: "vat.vuhoanglighting@gmail.com", tax_code: "", bank_name: "", bank_id: "",
   bank_account: "", bank_holder: "", bank_branch: "", logo_url: "",
   warranty_note: "Sản phẩm được bảo hành theo chính sách của nhà sản xuất. Vui lòng giữ phiếu bán hàng để được hỗ trợ.",
-  invoice_footer: "Cảm ơn Quý khách đã tin tưởng và lựa chọn VH Lighting.",
-  invoice_creator_name: "Vũ Lighting"
+  invoice_footer: "Cảm ơn Quý khách đã tin tưởng và lựa chọn VH Lighting.", invoice_creator_name: "Vũ Lighting"
 };
 
 export default function Page(){
@@ -47,7 +46,7 @@ export default function Page(){
       <label>Chủ tài khoản<input value={form.bank_holder||""} onChange={e=>set("bank_holder",e.target.value)} placeholder="Tên công ty/chủ tài khoản"/></label>
       <label>Chi nhánh<input value={form.bank_branch||""} onChange={e=>set("bank_branch",e.target.value)}/></label>
     </div></div>
-    <div className="settings-section"><h3>Hiển thị trên hóa đơn</h3><div className="form-grid"><label>Tên người lập phiếu<input value={form.invoice_creator_name||""} onChange={e=>set("invoice_creator_name",e.target.value)} placeholder="Vũ Lighting"/></label></div></div><div className="settings-section"><h3>Nội dung cuối hóa đơn</h3><div className="form-grid">
+    <div className="settings-section"><h3>Người lập phiếu</h3><div className="form-grid"><label>Tên hiển thị trên hóa đơn<input value={form.invoice_creator_name||""} onChange={e=>set("invoice_creator_name",e.target.value)} placeholder="Vũ Lighting"/></label></div></div><div className="settings-section"><h3>Nội dung cuối hóa đơn</h3><div className="form-grid">
       <label className="span-2">Chính sách bảo hành<textarea value={form.warranty_note||""} onChange={e=>set("warranty_note",e.target.value)}/></label>
       <label>Thông điệp cảm ơn<textarea value={form.invoice_footer||""} onChange={e=>set("invoice_footer",e.target.value)}/></label>
     </div></div>

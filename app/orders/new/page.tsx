@@ -30,14 +30,14 @@ export default function Page() {
   const searchResults = useMemo(() => {
     const q = productQuery.trim().toLowerCase();
     if (!q) return [];
-    return products.filter(x => x.sku.toLowerCase().includes(q) || x.name.toLowerCase().includes(q) || (x.light_color||'').toLowerCase().includes(q)).slice(0, 20);
+    return products.filter(x => x.sku.toLowerCase().includes(q) || x.name.toLowerCase().includes(q) || (x.attribute||'').toLowerCase().includes(q)).slice(0, 20);
   }, [products, productQuery]);
 
   function addProduct(product: Product) {
     setItems(current => {
       const found = current.findIndex(x => x.product_id === product.id);
       if (found >= 0) return current.map((x, i) => i === found ? { ...x, quantity: x.quantity + 1, line_total: (x.quantity + 1) * x.unit_price } : x);
-      return [...current, { product_id: product.id, sku: product.sku, product_name: product.name, light_color: product.light_color || null, unit: product.unit, quantity: 1, unit_price: Number(product.price), line_total: Number(product.price) }];
+      return [...current, { product_id: product.id, sku: product.sku, product_name: product.name, attribute: product.attribute||null, unit: product.unit, quantity: 1, unit_price: Number(product.price), line_total: Number(product.price) }];
     });
     setProductQuery("");
     setShowResults(false);
@@ -67,12 +67,12 @@ export default function Page() {
       <div className="order-top-grid">
         <div><label>Khách hàng</label><select value={customerId} onChange={e => setCustomerId(e.target.value)}><option value="">Khách lẻ</option>{customers.map(x => <option key={x.id} value={x.id}>{x.name} — {x.phone}</option>)}</select></div>
         <div className="product-picker"><label>Nhập mã hoặc tên sản phẩm</label><div className="search-box large"><Search size={18}/><input value={productQuery} placeholder="Ví dụ: VH-AT hoặc âm trần…" onFocus={() => setShowResults(true)} onChange={e => { setProductQuery(e.target.value); setShowResults(true); }}/></div>
-          {showResults && productQuery && <div className="product-results">{searchResults.map(x => <button key={x.id} type="button" onClick={() => addProduct(x)}><div><span className="sku-pill">{x.sku}</span><b>{x.name}</b><small>{x.light_color?`${x.light_color} · `:''}{x.unit} · Tồn {x.stock}</small></div><strong>{Number(x.price).toLocaleString("vi-VN")} ₫</strong><Plus size={17}/></button>)}{!searchResults.length && <div className="empty-state">Không có sản phẩm phù hợp</div>}</div>}
+          {showResults && productQuery && <div className="product-results">{searchResults.map(x => <button key={x.id} type="button" onClick={() => addProduct(x)}><div><span className="sku-pill">{x.sku}</span><b>{x.name}</b><small>{x.attribute?x.attribute+' · ':''}{x.unit} · Tồn {x.stock}</small></div><strong>{Number(x.price).toLocaleString("vi-VN")} ₫</strong><Plus size={17}/></button>)}{!searchResults.length && <div className="empty-state">Không có sản phẩm phù hợp</div>}</div>}
         </div>
       </div>
 
       <div className="table-wrap order-table"><table><thead><tr><th>STT</th><th>Mã</th><th>Tên sản phẩm</th><th>Thuộc tính</th><th>ĐVT</th><th>SL</th><th>Đơn giá</th><th>Thành tiền</th><th></th></tr></thead><tbody>
-        {items.map((x, i) => <tr key={x.product_id || i}><td>{i + 1}</td><td><span className="sku-pill">{x.sku}</span></td><td><b>{x.product_name}</b></td><td>{x.light_color||'—'}</td><td>{x.unit}</td><td><input className="mini" type="number" min="1" value={x.quantity} onChange={e => patch(i, "quantity", Number(e.target.value))}/></td><td><input className="money" type="number" min="0" value={x.unit_price} onChange={e => patch(i, "unit_price", Number(e.target.value))}/></td><td className="number-cell"><b>{x.line_total.toLocaleString("vi-VN")} ₫</b></td><td><button className="icon-danger" onClick={() => setItems(v => v.filter((_, n) => n !== i))}><Trash2 size={16}/></button></td></tr>)}
+        {items.map((x, i) => <tr key={x.product_id || i}><td>{i + 1}</td><td><span className="sku-pill">{x.sku}</span></td><td><b>{x.product_name}</b></td><td>{x.attribute||'—'}</td><td>{x.unit}</td><td><input className="mini" type="number" min="1" value={x.quantity} onChange={e => patch(i, "quantity", Number(e.target.value))}/></td><td><input className="money" type="number" min="0" value={x.unit_price} onChange={e => patch(i, "unit_price", Number(e.target.value))}/></td><td className="number-cell"><b>{x.line_total.toLocaleString("vi-VN")} ₫</b></td><td><button className="icon-danger" onClick={() => setItems(v => v.filter((_, n) => n !== i))}><Trash2 size={16}/></button></td></tr>)}
         {!items.length && <tr><td colSpan={9} className="empty-state">Nhập mã sản phẩm phía trên để thêm vào đơn.</td></tr>}
       </tbody></table></div>
 

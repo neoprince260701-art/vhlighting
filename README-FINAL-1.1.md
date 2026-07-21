@@ -1,16 +1,33 @@
-# VH Lighting Final 1.1
+# VH Lighting ERP Final 1.1
 
-Bản này giữ nguyên nền Final v3 và chỉ cập nhật phần hóa đơn + thuộc tính sản phẩm. Không có Import/Export Excel.
+Bản này được nâng cấp trực tiếp từ `VH-Lighting-Final-v3-Compact-Invoice` và chỉ tập trung vào bố cục đơn hàng/hóa đơn, không có chức năng nhập Excel.
 
-## Cập nhật
-- Hóa đơn không in mã đơn và không in mã hàng.
-- Bảng: STT | Tên sản phẩm | Thuộc tính | ĐVT | SL | Đơn giá | Thành tiền.
-- Bỏ số tiền bằng chữ và chính sách bảo hành.
-- Chữ ký chỉ còn Người lập phiếu và Khách hàng.
-- Người lập phiếu mặc định: Vũ Lighting, chỉnh được trong Cài đặt hóa đơn.
-- QR VietQR 38mm.
-- Mã đơn nội bộ vẫn giữ trong danh sách đơn hàng và dùng làm nội dung QR.
-- Thêm thuộc tính Trắng/Vàng/Trung tính trong sản phẩm và đơn hàng.
+## Đã cập nhật
 
-## SQL
-Chạy `supabase/migration_invoice_final_1_1.sql` một lần trong Supabase SQL Editor.
+- Danh sách đơn hàng theo bố cục quản trị mới.
+- Mã đơn nội bộ vẫn hiển thị trong danh sách/chi tiết đơn.
+- Hóa đơn A4 không hiển thị mã đơn và không hiển thị mã sản phẩm.
+- Bảng hóa đơn: STT, Tên sản phẩm, Thuộc tính, ĐVT, SL, Đơn giá, Thành tiền.
+- Thuộc tính tùy chọn: Trắng, Vàng, Trung tính.
+- QR VietQR lớn hơn, dễ quét.
+- Giữ chiết khấu, phí vận chuyển, tổng thanh toán.
+- Bỏ phần số tiền bằng chữ.
+- Chỉ còn chữ ký Người lập phiếu và Khách hàng.
+- Người lập phiếu mặc định `Vũ Lighting`, chỉnh được trong Cài đặt.
+- Không thêm/import Excel.
+
+## SQL cần chạy một lần
+
+Mở Supabase > SQL Editor và chạy:
+
+`supabase/migration_invoice_final_1_1.sql`
+
+Migration chỉ thêm các cột `attribute` và `invoice_creator_name`, không xóa dữ liệu cũ.
+
+## Deploy
+
+1. Upload toàn bộ nội dung thư mục này lên root repository GitHub.
+2. Giữ nguyên biến môi trường Vercel:
+   - `NEXT_PUBLIC_SUPABASE_URL`
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+3. Vercel tự deploy lại.
