@@ -1,19 +1,34 @@
-# VH Lighting Final 1.1
+# VH Lighting ERP Final 1.1
 
-## Thay đổi chính
-- Hóa đơn A4 không hiển thị mã đơn nội bộ.
-- Danh sách đơn hàng vẫn hiển thị mã dạng `VH-YYYYMMDD-001`.
-- Bỏ cột mã hàng khỏi hóa đơn.
-- Tách cột Thuộc tính: Trắng, Vàng, Trung tính...
-- Không ghép thuộc tính vào tên sản phẩm.
-- Bỏ phần số tiền bằng chữ.
+Bản này được cập nhật trực tiếp từ Final 1.0 / Compact Invoice.
+
+## Điểm mới
+
+- Nhập sản phẩm hàng loạt từ Excel, có xem trước và cập nhật theo Mã + Tên.
+- Thuộc tính sản phẩm tùy chọn: Trắng, Vàng, Trung tính và các lựa chọn khác.
+- Mã sản phẩm dùng nội bộ để gom nhóm và tìm kiếm.
+- Danh sách đơn hàng sinh mã nội bộ dạng `VH-YYYYMMDD-001`.
+- Mã đơn nội bộ không hiển thị trên hóa đơn A4; mã vẫn được nhúng trong QR để đối soát.
+- Hóa đơn bỏ cột mã hàng và phần tiền bằng chữ.
+- Bảng in: STT, Tên sản phẩm, Thuộc tính, ĐVT, SL, Đơn giá, Thành tiền.
 - Chữ ký chỉ còn Người lập phiếu và Khách hàng.
-- Tên người lập phiếu mặc định là `Vũ Lighting`, chỉnh được trong Cài đặt hóa đơn.
-- Tăng QR để quét ổn định.
-- Giữ chiết khấu, phí vận chuyển và ghi chú đơn hàng.
+- Người lập phiếu mặc định là `Vũ Lighting`, có thể sửa trong Cài đặt hóa đơn.
+- QR VietQR được tăng kích thước để quét ổn định.
+- Giữ Chiết khấu và Phí vận chuyển trên màn hình bán hàng và hóa đơn.
 
-## Cập nhật Supabase
-Chạy file `supabase/migration_final_1_1.sql` đúng một lần.
+## Cài đặt
 
-## Cập nhật website
-Upload toàn bộ mã nguồn lên GitHub. Vercel sẽ tự deploy lại.
+1. Đưa toàn bộ nội dung thư mục này lên root repository GitHub.
+2. Chạy các migration chưa chạy trong `supabase/`, đặc biệt:
+   - `migration_product_light_color.sql`
+   - `migration_final_1_1.sql`
+3. Giữ nguyên biến môi trường Vercel:
+   - `NEXT_PUBLIC_SUPABASE_URL`
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+4. Chờ Vercel deploy lại.
+
+## Excel mẫu
+
+Tải trong hệ thống tại Sản phẩm → Nhập Excel → Tải file mẫu, hoặc dùng file:
+
+`public/VH-Lighting-Mau-Nhap-San-Pham.xlsx`
