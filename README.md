@@ -32,3 +32,6 @@ Bản này đã chạy thành công `next build` với Next.js 15.5.20 và TypeS
 
 ## Cập nhật phí vận chuyển và VietQR
 Nếu database đã tồn tại, chạy thêm file `supabase/migration_shipping_fee_vietqr.sql` trong Supabase SQL Editor. Sau đó vào **Cài đặt hóa đơn** và nhập mã ngân hàng VietQR (ví dụ `VCB` hoặc mã BIN), số tài khoản và chủ tài khoản.
+
+## Cập nhật thuộc tính Ánh sáng
+Chạy file `supabase/migration_product_light_color.sql` một lần trong Supabase SQL Editor. Trường Ánh sáng là tùy chọn và được hỗ trợ ở form thêm sản phẩm, danh sách, tìm kiếm bán hàng và nhập Excel.

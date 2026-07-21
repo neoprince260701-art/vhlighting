@@ -4,10 +4,9 @@ import { useParams } from "next/navigation";
 import AuthGuard from "@/components/AuthGuard";
 import AppShell from "@/components/AppShell";
 import { supabase } from "@/lib/supabase";
-import { moneyToVietnameseWords } from "@/lib/money-to-words";
 import type { CompanySettings, Order, OrderItem } from "@/lib/types";
 
-const fallback: CompanySettings={id:1,company_name:"VH LIGHTING",tagline:"Chuyên cung cấp thiết bị chiếu sáng",address:"",hotline:"0877 933 362",website:"vulighting.com",email:"vat.vuhoanglighting@gmail.com",tax_code:"",bank_name:"",bank_id:"",bank_account:"",bank_holder:"",bank_branch:"",logo_url:"",warranty_note:"Sản phẩm được bảo hành theo chính sách của nhà sản xuất.",invoice_footer:"Cảm ơn Quý khách đã tin tưởng VH Lighting."};
+const fallback: CompanySettings={id:1,company_name:"VH LIGHTING",tagline:"Chuyên cung cấp thiết bị chiếu sáng",address:"",hotline:"0877 933 362",website:"vulighting.com",email:"vat.vuhoanglighting@gmail.com",tax_code:"",bank_name:"",bank_id:"",bank_account:"",bank_holder:"",bank_branch:"",logo_url:"",warranty_note:"Sản phẩm được bảo hành theo chính sách của nhà sản xuất.",invoice_footer:"Cảm ơn Quý khách đã tin tưởng VH Lighting.",invoice_creator_name:"Vũ Lighting"};
 const money=(v:number)=>Number(v||0).toLocaleString("vi-VN");
 
 export default function Page() {
@@ -42,7 +41,7 @@ export default function Page() {
           <p><b>Hotline:</b> {company.hotline||"—"}{company.website?<> · <b>Website:</b> {company.website}</>:null}</p>
           {company.email&&<p><b>Email:</b> {company.email}</p>}{company.tax_code&&<p><b>MST:</b> {company.tax_code}</p>}</div>
         </div>
-        <div className="invoice-title-block"><h2>PHIẾU BÁN HÀNG</h2><div className="invoice-meta"><span>Số phiếu</span><b>{order.order_no}</b><span>Ngày lập</span><b>{new Date(order.created_at).toLocaleDateString("vi-VN")}</b><span>Thời gian</span><b>{new Date(order.created_at).toLocaleTimeString("vi-VN",{hour:"2-digit",minute:"2-digit"})}</b></div></div>
+        <div className="invoice-title-block"><h2>PHIẾU BÁN HÀNG</h2><div className="invoice-meta"><span>Ngày lập</span><b>{new Date(order.created_at).toLocaleDateString("vi-VN")}</b><span>Thời gian</span><b>{new Date(order.created_at).toLocaleTimeString("vi-VN",{hour:"2-digit",minute:"2-digit"})}</b></div></div>
       </header>
 
       <section className="invoice-customer">
@@ -51,8 +50,8 @@ export default function Page() {
         <div className="full"><span>Địa chỉ / Công trình</span><b>{order.customer_address||"—"}</b></div>
       </section>
 
-      <table className="invoice-table"><thead><tr><th>STT</th><th>Mã hàng</th><th>Tên sản phẩm</th><th>ĐVT</th><th>SL</th><th>Đơn giá</th><th>Thành tiền</th></tr></thead><tbody>
-        {items.map((x,i)=><tr key={i}><td>{i+1}</td><td>{x.sku}</td><td>{x.product_name}</td><td>{x.unit}</td><td>{x.quantity}</td><td>{money(x.unit_price)}</td><td>{money(x.line_total)}</td></tr>)}
+      <table className="invoice-table"><thead><tr><th>STT</th><th>Tên sản phẩm</th><th>Thuộc tính</th><th>ĐVT</th><th>SL</th><th>Đơn giá</th><th>Thành tiền</th></tr></thead><tbody>
+        {items.map((x,i)=><tr key={i}><td>{i+1}</td><td>{x.product_name}</td><td>{x.attribute||""}</td><td>{x.unit}</td><td>{x.quantity}</td><td>{money(x.unit_price)}</td><td>{money(x.line_total)}</td></tr>)}
       </tbody></table>
 
       <section className="invoice-finance">
@@ -62,9 +61,8 @@ export default function Page() {
         <table className="invoice-total-table"><tbody><tr><td>Tạm tính</td><td>{money(order.subtotal)} ₫</td></tr><tr><td>Chiết khấu</td><td>- {money(order.discount)} ₫</td></tr><tr><td>Phí vận chuyển</td><td>+ {money(order.shipping_fee||0)} ₫</td></tr><tr className="grand-total"><td>TỔNG THANH TOÁN</td><td>{money(order.total)} ₫</td></tr></tbody></table>
       </section>
 
-      <div className="invoice-in-words"><b>Bằng chữ:</b> <em>{moneyToVietnameseWords(order.total)}.</em></div>
-      <section className="invoice-notes"><div><b>Ghi chú đơn hàng:</b><p>{order.note||"Không có"}</p></div><div><b>Chính sách bảo hành:</b><p>{company.warranty_note||"—"}</p></div></section>
-      <section className="sign"><div><b>Người lập phiếu</b><span>(Ký và ghi rõ họ tên)</span></div><div><b>Khách hàng</b><span>(Ký và ghi rõ họ tên)</span></div><div><b>Người giao hàng</b><span>(Ký và ghi rõ họ tên)</span></div></section>
+      <section className="invoice-notes single"><div><b>Ghi chú đơn hàng:</b><p>{order.note||"Không có"}</p></div></section>
+      <section className="sign"><div><b>Người lập phiếu</b><strong>{company.invoice_creator_name||"Vũ Lighting"}</strong><span>(Ký và ghi rõ họ tên)</span></div><div><b>Khách hàng</b><span>(Ký và ghi rõ họ tên)</span></div></section>
       <footer className="invoice-footer"><b>{company.invoice_footer}</b><span>{[company.hotline,company.website,company.email].filter(Boolean).join("  •  ")}</span></footer>
     </article>}
   </AppShell></AuthGuard>;
